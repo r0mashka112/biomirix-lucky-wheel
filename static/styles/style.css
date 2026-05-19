@@ -1,0 +1,431 @@
+/**
+  Нормализация блочной модели
+ */
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+/**
+  Убираем внутренние отступы слева тегам списков,
+  у которых есть атрибут class
+ */
+:where(ul, ol):where([class]) {
+    padding-left: 0;
+}
+
+/**
+  Убираем внешние отступы body и двум другим тегам,
+  у которых есть атрибут class
+ */
+body,
+:where(blockquote, figure, fieldset):where([class]) {
+    margin: 0;
+}
+
+/**
+  Убираем внешние отступы вертикали нужным тегам,
+  у которых есть атрибут class
+ */
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  dl
+):where([class]) {
+    margin-block: 0;
+}
+
+:where(dd[class]) {
+    margin-left: 0;
+}
+
+:where(fieldset[class]) {
+    padding: 0;
+    border: none;
+}
+
+/**
+  Убираем стандартный маркер маркированному списку,
+  у которого есть атрибут class
+ */
+:where(ul[class]) {
+    list-style: none;
+}
+
+:where(address[class]) {
+    font-style: normal;
+}
+
+/**
+  Обнуляем вертикальные внешние отступы параграфа,
+  объявляем локальную переменную для внешнего отступа вниз,
+  чтобы избежать взаимодействие с более сложным селектором
+ */
+p {
+    --paragraphMarginBottom: 24px;
+
+    margin-block: 0;
+}
+
+/**
+  Внешний отступ вниз для параграфа без атрибута class,
+  который расположен не последним среди своих соседних элементов
+ */
+p:where(:not([class]):not(:last-child)) {
+    margin-bottom: var(--paragraphMarginBottom);
+}
+
+
+/**
+  Упрощаем работу с изображениями и видео
+ */
+img,
+video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/**
+  Наследуем свойства шрифт для полей ввода
+ */
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+html {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    height: 100%;
+    /**
+      Убираем скачок интерфейса по горизонтали
+      при появлении / исчезновении скроллбара
+     */
+    scrollbar-gutter: stable;
+    /**
+      Плавный скролл
+     */
+    scroll-behavior: smooth;
+}
+
+body {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    min-height: 100%;
+    /**
+      Унифицированный интерлиньяж
+     */
+    line-height: 1.5;
+}
+
+/**
+  Нормализация высоты элемента ссылки при его инспектировании в DevTools
+ */
+a:where([class]) {
+    display: inline-flex;
+}
+
+/**
+  Курсор-рука при наведении на элемент
+ */
+button,
+label {
+    cursor: pointer;
+}
+
+/**
+  Убирает серую подсветку при тапе на мобильных устройствах (iOS/Android)
+ */
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/**
+  Чиним баг задержки смены цвета при взаимодействии с svg-элементами
+ */
+svg * {
+    transition-property: fill, stroke;
+}
+
+/**
+  Приведение рамок таблиц в классический 'collapse' вид
+ */
+:where(table) {
+    border-collapse: collapse;
+    border-color: currentColor;
+}
+
+/**
+  Удаляем все анимации и переходы для людей,
+  которые предпочитают их не использовать
+ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Fonts */
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/static/fonts/Poppins-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/static/fonts/Poppins-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/static/fonts/Poppins-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Modal */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: 0.25s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(5px);
+}
+
+.modal__content {
+    position: relative;
+    z-index: 2;
+
+    width: min(90vw, 340px);
+
+    padding: 28px 24px;
+
+    border-radius: 28px;
+
+    background: #ffffff;
+
+    text-align: center;
+
+    box-shadow:
+            0 10px 35px rgba(74, 47, 138, 0.18);
+
+    transform: translateY(15px) scale(0.96);
+
+    transition: 0.25s ease;
+}
+
+.modal.active .modal__content {
+    transform: translateY(0) scale(1);
+}
+
+.modal__text {
+    margin: 0 0 24px;
+
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 500;
+
+    color: #222;
+}
+
+.modal__button {
+    width: 100%;
+
+    padding: 13px 24px;
+
+    border: none;
+    border-radius: 50px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    color: #fff;
+
+    background: linear-gradient(160deg, #7c5cbf, #4a2f8a);
+
+    box-shadow:
+            0 6px 20px rgba(80,40,160,0.35),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+
+    transition: 0.2s ease;
+}
+
+.modal__button:active {
+    transform: scale(0.98);
+}
+
+/* Main */
+
+:root {
+    --container-width: 1200px;
+    --container-padding-x: 20px;
+    --wheel-size: min(90vw, 460px);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #000000;
+    background-color: #ffffff;
+    min-height: 100dvh;
+    user-select: none;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        'header'
+        'main'
+}
+
+.container {
+    max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+}
+
+.header {
+    grid-area: header;
+}
+
+.header__inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.header__logo {
+    width: min(70vw, 250px);
+    height: auto;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-area: main;
+}
+
+.wheel-container {
+    width: var(--wheel-size);
+    aspect-ratio: 1;
+}
+
+#wheel {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.spin-btn {
+    margin: 50px auto 0;
+    display: block;
+    padding: 13px 48px;
+    font-size: clamp(16px, 4vw, 20px);
+    font-weight: 600;
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(160deg, #7c5cbf, #4a2f8a);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(80,40,160,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+    letter-spacing: 0.04em;
+    transition: 0.2s ease;
+}
+
+.spin-btn:active {
+    transform: scale(0.98);
+}
+
+.spin-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Media Queries */
+
+/* планшеты */
+@media (max-width: 768px) {
+    :root {
+        --wheel-size: min(85vw, 380px);
+    }
+
+    .spin-btn {
+        padding: 12px 36px;
+    }
+}
+
+/* телефоны */
+@media (max-width: 480px) {
+    :root {
+        --wheel-size: 90vw;
+    }
+
+    .header__inner {
+        padding-top: 12px;
+    }
+
+    .spin-btn {
+        width: 80%;
+        padding: 14px 0;
+        font-size: 16px;
+    }
+
+    .modal__content {
+        width: 90vw;
+        padding: 20px;
+        border-radius: 20px;
+    }
+}
