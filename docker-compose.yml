@@ -2,6 +2,11 @@ services:
   backend:
     build:
       context: ./backend
+    command: >
+      sh -c "
+        npx sequelize-cli db:migrate &&
+        npm run start
+      "
     container_name: biomirix_backend
     restart: always
     init: true
@@ -32,7 +37,6 @@ services:
       - "8000"
     networks:
       - biomirix_network
-
 
   nginx:
     image: nginx:latest

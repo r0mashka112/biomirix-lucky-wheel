@@ -57,6 +57,3 @@ async def webhook(request: Request) -> None:
     await dp.feed_update(bot, update)
 
     logging.info("Update processed")
-
-if __name__ == '__main__':
-    uvicorn.run('main:app', host = '0.0.0.0', port = 8000)

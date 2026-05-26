@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "node src/server.js",
+    "migration:undo": "npx sequelize-cli db:migrate:undo",
+    "migration:run": "npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "r0m4ik_2k4",
